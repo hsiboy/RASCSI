@@ -283,13 +283,18 @@ def formatted_output():
             else:
                 output.append(f"{line['id']} {line['device_type'][2:4]} {line['file']} {line['vendor']} {line['product']} {line['status']}")
     else:
+        
+        cmd = "hostname -I | cut -d\' \' -f1"
+        IP = subprocess.check_output(cmd, shell = True )
+        
         output.append("No image mounted!")
-
-    output.append(f"~~RaSCSI v{version}~~")
+        output.append("IP: " + str(IP))
+        output.append(f"~~RaSCSI v{version}~~")
+        
     return output
 
 def start_splash():
-    splash = Image.open(f"{cwd}/splash_start.bmp").convert("1")
+    splash = Image.open(f"{cwd}/splash_start.bmp").resize((oled.width, oled.height), Image.ANTIALIAS).convert("1")
     draw.bitmap((0, 0), splash)
     oled.image(splash)
     oled.show()
@@ -297,7 +302,7 @@ def start_splash():
 
 def stop_splash():
     draw.rectangle((0,0,WIDTH,HEIGHT), outline=0, fill=0)
-    splash = Image.open(f"{cwd}/splash_stop.bmp").convert("1")
+    splash = Image.open(f"{cwd}/splash_stop.bmp").resize((oled.width, oled.height), Image.ANTIALIAS).convert("1")
     draw.bitmap((0, 0), splash)
     oled.image(splash)
     oled.show()
